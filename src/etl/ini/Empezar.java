@@ -39,7 +39,6 @@ public class Empezar
 	
 	public static void main(String[] args)
 	{
-		/*CAMBIO 1*/
 		cs=new cloudStorage();
 		bq=new bigQuery();
 		String eleccion="";
@@ -104,28 +103,26 @@ public class Empezar
 					System.out.println("Inicio....");
 					cn=dbPSql.get_cn_boton();
 					if (cn==null) return;
-					//try
-					//{
-						crearStatement();
-						System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-						if (leer_vista(constante.getSCRIPT_SQL_ACTIVACION())==false) return;
+					crearStatement();
+					System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
+					if (leer_vista(constante.getSCRIPT_SQL_ACTIVACION())==false) return;
 						
-						scrs.extractData(st,rs);
-						System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						cs.to_cloudStorage(constante.SALIDA_CSV + nameFileCsv, constante.getBUCKET_NAME(), nameFileCsv);
-						System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+					scrs.extractData(st,rs);
+					System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+					System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+					cs.to_cloudStorage(constante.SALIDA_CSV + nameFileCsv, constante.getBUCKET_NAME(), nameFileCsv);
+					System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 						
-						uri=bq.getUri(nameFileCsv,constante.getBUCKET_NAME());
-						System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						bq.to_bigQuery(uri, constante.getDATASET(), constante.TABLA1_BOTON);
-						System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+					uri=bq.getUri(nameFileCsv,constante.getBUCKET_NAME());
+					System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+					bq.to_bigQuery(uri, constante.getDATASET(), constante.TABLA1_BOTON);
+					System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+					
+					//rs.close();
+					//cn.close();
+					//st.close();
 						
-						//rs.close();
-						//cn.close();
-						//st.close();
-						
-						System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
+					System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
 					//}
 					//catch (SQLException e)
 					//{
