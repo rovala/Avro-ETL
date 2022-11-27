@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry excluding="Ini/utlAvro.java" kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/postgresql-42.5.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-cloud-storage-2.13.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-cloud-core-2.8.22.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-auth-library-credentials-1.12.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-http-client-1.42.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/gax-2.19.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-http-client-gson-1.42.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-auth-library-oauth2-http-1.12.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/threetenbp-1.6.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/guava-31.1-jre.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/opencensus-api-0.31.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/opencensus-contrib-http-util-0.31.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/grpc-context-1.27.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/gson-2.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/api-common-2.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-cloud-core-http-2.8.22.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-http-client-appengine-1.42.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google_http_client_jackson2-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-api-client-2.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-api-services-storage-v1-rev20220705-2.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/failureaccess-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/gax-httpjson-0.104.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/jackson-core-2.14.0-rc2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/personal/.m2/repository/com/google/cloud/google-cloud-bigquery/2.6.1/google-cloud-bigquery-2.6.1.jar" sourcepath="C:/Users/personal/.m2/repository/com/google/cloud/google-cloud-bigquery/2.6.1/google-cloud-bigquery-2.6.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="google-cloud-bigquery-2.6.1.jar"/>
+			<attribute name="maven.groupId" value="com.google.cloud"/>
+			<attribute name="maven.artifactId" value="google-cloud-bigquery"/>
+			<attribute name="maven.version" value="2.6.1"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/personal/Desktop/google-api-services-bigquery-v2-rev20220924-2.0.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
