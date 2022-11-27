@@ -42,21 +42,20 @@ public class Empezar
 		cs=new cloudStorage();
 		bq=new bigQuery();
 		String eleccion="";
-		List <String> choose=new ArrayList<String>(Arrays.asList("1","2","3","4"));
+		List <String> choose=new ArrayList<String>(Arrays.asList("1","2","3"));
 		Scanner in=new Scanner(System.in);
 		while (true)
 		{
 			do
 			{
-				System.out.print("Extraccion de informacion de BDs para carga en la nube\r");
-				System.out.println("======================================================");
+				System.out.print("Extraccion de informacion de BDs para carga en la nuve por contexto\r");
+				System.out.println("=================================================================");
 				System.out.println("Menu de Ejecucion");		
 				System.out.println("-----------------");
 				System.out.println("Elija el numero correspondiente para su eleccion:");
-				System.out.println("1. Borrar tablas bigquery");
-				System.out.println("2. Crear tablas bigquery");
-				System.out.println("3. Extraccion ETL de datos");
-				System.out.println("4. Salir");
+				System.out.println("1. Boton de Panico");
+				System.out.println("2. R.R.H.H.");
+				System.out.println("3. Salir");
 				eleccion=in.next();
 			}
 			while (!choose.contains(eleccion));
@@ -64,127 +63,99 @@ public class Empezar
 			switch (eleccion)
 			{
 				case "1":
-					constantes ctemp=new constantes();
-					ctemp.setFILE_CONTEXTO("boton_panico");
-					bq.dropTable(ctemp.getDATASET(),ctemp.TABLA1_BOTON);
-					bq.dropTable(ctemp.getDATASET(),ctemp.TABLA2_BOTON);
-					ctemp=null;
-					System.gc();
+					ejecutarBoton();
+					
 					break;
 				case "2":
-					constantes ctemp1=new constantes();
-					BotonPanico bPanico=new BotonPanico();
-					ctemp1.setFILE_CONTEXTO("boton_panico");
-					bq.createTable(ctemp1.getDATASET(), ctemp1.TABLA1_BOTON,bPanico.schemaTablaActivacion());
-					bq.createTable(ctemp1.getDATASET(), ctemp1.TABLA2_BOTON,bPanico.schemaTablaMonitoreo());
-					ctemp1=null;
-					bPanico=null;
-					System.gc();
+
 					break;
 				case "3":
-					tiempo exec_time=new tiempo();
-					constantes constante=new constantes();
-					exec_time.setFormatDateTime(constante.FORMATO_DATE_TIME);
-					
-					try
-					{
-						constante.setFILE_CONTEXTO("boton_panico");
-						nameFileCsv=constante.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
-						os=new FileOutputStream(constante.SALIDA_CSV + nameFileCsv);
-						scrs=new StreamingCsvResultSetExtractor(os);
-						
-					}
-					catch (FileNotFoundException e)
-					{
-						System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +constante.SALIDA_CSV + constante.getFILE_CONTEXTO());
-						return;
-					}
-					
-					System.out.println("Inicio....");
-					cn=dbPSql.get_cn_boton();
-					if (cn==null) return;
-					crearStatement();
-					System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-					if (leer_vista(constante.getSCRIPT_SQL_ACTIVACION())==false) return;
-						
-					scrs.extractData(st,rs);
-					System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-					System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-					cs.to_cloudStorage(constante.SALIDA_CSV + nameFileCsv, constante.getBUCKET_NAME(), nameFileCsv);
-					System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						
-					uri=bq.getUri(nameFileCsv,constante.getBUCKET_NAME());
-					System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-					bq.to_bigQuery(uri, constante.getDATASET(), constante.TABLA1_BOTON);
-					System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-					
-					//rs.close();
-					//cn.close();
-					//st.close();
-						
-					System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
-					//}
-					//catch (SQLException e)
-					//{
-						//JOptionPane.showMessageDialog(null, "POSTGRESQL " + e.getMessage());
-					//}
-					
-					
-					exec_time.setFormatDateTime(constante.FORMATO_DATE_TIME);
-					try
-					{
-						constante.setFILE_CONTEXTO("boton_panico");
-						nameFileCsv=constante.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
-						os=new FileOutputStream(constante.SALIDA_CSV + nameFileCsv);
-						scrs=new StreamingCsvResultSetExtractor(os);
-						
-					}
-					catch (FileNotFoundException e)
-					{
-						System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +constante.SALIDA_CSV + constante.getFILE_CONTEXTO());
-						return;
-					}
-					
-					System.out.println("Inicio....");
-					//cn=dbPSql.get_cn_boton();
-					if (cn==null) return;
-					//try
-					//{
-						System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-						if (leer_vista(constante.getSCRIPT_SQL_MONITOREO())==false) return;
-						
-						scrs.extractData(st,rs);
-						System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						cs.to_cloudStorage(constante.SALIDA_CSV + nameFileCsv, constante.getBUCKET_NAME(), nameFileCsv);
-						System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						
-						uri=bq.getUri(nameFileCsv,constante.getBUCKET_NAME());
-						System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						bq.to_bigQuery(uri, constante.getDATASET(), constante.TABLA2_BOTON);
-						System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-						
-						//rs.close();
-						//cn.close();
-						
-						System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
-					//}
-					//catch (SQLException e)
-					//{
-						//JOptionPane.showMessageDialog(null, "POSTGRESQL " + e.getMessage());
-					//}
-					break;
-				case "4":
 					in.close();
 					System.exit(0);
 					return;
 			}
 		
 		}
-
-
 	}
 	
+	public static void ejecutarBoton()
+	{
+		constantes ctemp=new constantes();
+		ctemp.setFILE_CONTEXTO("boton_panico");
+		bq.dropTable(ctemp.getDATASET(),ctemp.TABLA1_BOTON);
+		bq.dropTable(ctemp.getDATASET(),ctemp.TABLA2_BOTON);
+
+		BotonPanico bPanico=new BotonPanico();
+		bq.createTable(ctemp.getDATASET(), ctemp.TABLA1_BOTON,bPanico.schemaTablaActivacion());
+		bq.createTable(ctemp.getDATASET(), ctemp.TABLA2_BOTON,bPanico.schemaTablaMonitoreo());
+
+		tiempo exec_time=new tiempo();
+		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
+			
+		try
+		{
+			ctemp.setFILE_CONTEXTO("boton_panico");
+			nameFileCsv=ctemp.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
+			os=new FileOutputStream(ctemp.SALIDA_CSV + nameFileCsv);
+			scrs=new StreamingCsvResultSetExtractor(os);
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +ctemp.SALIDA_CSV + ctemp.getFILE_CONTEXTO());
+			return;
+		}
+					
+		System.out.println("Inicio....");
+		cn=dbPSql.get_cn_boton();
+		if (cn==null) return;
+		crearStatement();
+		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
+		if (leer_vista(ctemp.getSCRIPT_SQL_ACTIVACION())==false) return;
+						
+		scrs.extractData(st,rs);
+		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		cs.to_cloudStorage(ctemp.SALIDA_CSV + nameFileCsv, ctemp.getBUCKET_NAME(), nameFileCsv);
+		System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+						
+		uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
+		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		bq.to_bigQuery(uri, ctemp.getDATASET(), ctemp.TABLA1_BOTON);
+		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
+
+					
+		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
+		try
+		{
+			ctemp.setFILE_CONTEXTO("boton_panico");
+			nameFileCsv=ctemp.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
+			os=new FileOutputStream(ctemp.SALIDA_CSV + nameFileCsv);
+			scrs=new StreamingCsvResultSetExtractor(os);
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +ctemp.SALIDA_CSV + ctemp.getFILE_CONTEXTO());
+			return;
+		}
+					
+		System.out.println("Inicio....");
+		if (cn==null) return;
+		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
+		if (leer_vista(ctemp.getSCRIPT_SQL_MONITOREO())==false) return;
+		scrs.extractData(st,rs);
+		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		cs.to_cloudStorage(ctemp.SALIDA_CSV + nameFileCsv, ctemp.getBUCKET_NAME(), nameFileCsv);
+		System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+						
+		uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
+		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		bq.to_bigQuery(uri, ctemp.getDATASET(), ctemp.TABLA2_BOTON);
+		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
+	}
+
 	public static boolean leer_vista(String sql)
 	{
 		try
