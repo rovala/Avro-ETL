@@ -6,18 +6,15 @@ import java.io.OutputStream;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import etl.utiles.constantes;
 import etl.utiles.tiempo;
-import etl.dao.DatabasePostgreSQL;
+import etl.dao.EntornoBaseDatos;
 import etl.dao.bigQuery;
 import etl.dao.cloudStorage;
 import etl.models.BotonPanico;
@@ -30,7 +27,7 @@ public class Empezar
 	static Statement st;
 	static StreamingCsvResultSetExtractor scrs;
 	static OutputStream os;
-	static DatabasePostgreSQL dbPSql=new DatabasePostgreSQL();
+	static EntornoBaseDatos entornoBaseDatos=new EntornoBaseDatos();
 	static String nameFileCsv;
 	static cloudStorage cs;
 	static bigQuery bq;
@@ -64,7 +61,6 @@ public class Empezar
 			{
 				case "1":
 					ejecutarBoton();
-					
 					break;
 				case "2":
 
@@ -80,21 +76,35 @@ public class Empezar
 	
 	public static void ejecutarBoton()
 	{
+		/**********************************/
+		/************1º ETAPA: CONEXION ***/
+		/**********************************/
 		constantes ctemp=new constantes();
-		ctemp.setFILE_CONTEXTO("boton_panico");
-		bq.dropTable(ctemp.getDATASET(),ctemp.TABLA1_BOTON);
-		bq.dropTable(ctemp.getDATASET(),ctemp.TABLA2_BOTON);
-
 		BotonPanico bPanico=new BotonPanico();
-		bq.createTable(ctemp.getDATASET(), ctemp.TABLA1_BOTON,bPanico.schemaTablaActivacion());
-		bq.createTable(ctemp.getDATASET(), ctemp.TABLA2_BOTON,bPanico.schemaTablaMonitoreo());
+		ctemp.setCLASS_BD("org.postgresql.Driver");
+		entornoBaseDatos.prepararEnvironment(ctemp.getCLASS_BD());
+		entornoBaseDatos.setConexion(bPanico.getCONEXION_POSTGRESQL(),bPanico.getUSER_BD_BOTON(),bPanico.getPASSWORD_BD_BOTON());
+		cn=entornoBaseDatos.get_cn();
+		if (cn==null) return;
+		entornoBaseDatos.setStatement();
+		st=entornoBaseDatos.get_st();
+		if (st==null) return;
+		
+		/*********************************/
+		/************2º ETAPA: ENTORNO ***/
+		/*********************************/
+		ctemp.setFILE_CONTEXTO("boton_panico");
+		bq.dropTable(ctemp.getDATASET(),bPanico.getTABLA1_BOTON());
+		bq.dropTable(ctemp.getDATASET(),bPanico.getTABLA2_BOTON());
+
+		bq.createTable(ctemp.getDATASET(), bPanico.getTABLA1_BOTON(),bPanico.schemaTablaActivacion());
+		bq.createTable(ctemp.getDATASET(), bPanico.getTABLA2_BOTON(),bPanico.schemaTablaMonitoreo());
 
 		tiempo exec_time=new tiempo();
 		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
-			
+		
 		try
 		{
-			ctemp.setFILE_CONTEXTO("boton_panico");
 			nameFileCsv=ctemp.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
 			os=new FileOutputStream(ctemp.SALIDA_CSV + nameFileCsv);
 			scrs=new StreamingCsvResultSetExtractor(os);
@@ -106,21 +116,29 @@ public class Empezar
 		}
 					
 		System.out.println("Inicio....");
-		cn=dbPSql.get_cn_boton();
-		if (cn==null) return;
-		crearStatement();
+		/*************************************/
+		/************3º ETAPA: EXTRACCION  ***/
+		/*************************************/
 		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-		if (leer_vista(ctemp.getSCRIPT_SQL_ACTIVACION())==false) return;
-						
+		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_ACTIVACION(),st,rs);
+		if (rs==null) return;
 		scrs.extractData(st,rs);
 		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+
+		/**************************************/
+		/************4º ETAPA: CLOUDSTORAGE ***/
+		/**************************************/
 		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		cs.to_cloudStorage(ctemp.SALIDA_CSV + nameFileCsv, ctemp.getBUCKET_NAME(), nameFileCsv);
 		System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 						
+
+		/**********************************/
+		/************5º ETAPA: BIGQUERY ***/
+		/**********************************/
 		uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
 		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-		bq.to_bigQuery(uri, ctemp.getDATASET(), ctemp.TABLA1_BOTON);
+		bq.to_bigQuery(uri, ctemp.getDATASET(), bPanico.getTABLA1_BOTON());
 		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
 
@@ -128,7 +146,6 @@ public class Empezar
 		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
 		try
 		{
-			ctemp.setFILE_CONTEXTO("boton_panico");
 			nameFileCsv=ctemp.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
 			os=new FileOutputStream(ctemp.SALIDA_CSV + nameFileCsv);
 			scrs=new StreamingCsvResultSetExtractor(os);
@@ -140,9 +157,9 @@ public class Empezar
 		}
 					
 		System.out.println("Inicio....");
-		if (cn==null) return;
 		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-		if (leer_vista(ctemp.getSCRIPT_SQL_MONITOREO())==false) return;
+		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_MONITOREO(),st,rs);
+		if (rs==null) return;
 		scrs.extractData(st,rs);
 		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
@@ -151,38 +168,12 @@ public class Empezar
 						
 		uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
 		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-		bq.to_bigQuery(uri, ctemp.getDATASET(), ctemp.TABLA2_BOTON);
+		bq.to_bigQuery(uri, ctemp.getDATASET(), bPanico.getTABLA2_BOTON());
 		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
 	}
 
-	public static boolean leer_vista(String sql)
-	{
-		try
-		{
-			rs = st.executeQuery(sql);
-			return true;
-		}
-		catch (SQLException e)
-		{
-			JOptionPane.showMessageDialog(null, "POSTGRESQL " + e.getMessage());
-			return false;
-		}
-	}
 	
-	public static boolean crearStatement()
-	{
-		try
-		{
-			st = cn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			return true;
-		}
-		catch (SQLException e)
-		{
-			JOptionPane.showMessageDialog(null, "POSTGRESQL " + e.getMessage());
-			return false;
-		}
-	}
 }
 
 
