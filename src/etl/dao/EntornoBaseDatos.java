@@ -16,8 +16,7 @@ public class EntornoBaseDatos {
 	
 	public EntornoBaseDatos()
 	{
-		//this.prepararEnvironment();
-		//this.getConexion();
+		
 	}
 	
 	public boolean prepararEnvironment(String classBD)
