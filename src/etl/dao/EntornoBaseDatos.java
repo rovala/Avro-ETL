@@ -1,5 +1,6 @@
 package etl.dao;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,15 +24,23 @@ public class EntornoBaseDatos {
 	{
 		try
 		{
-			Class.forName(classBD).newInstance();
-			return true;
+			try
+			{
+				Class.forName(classBD).getDeclaredConstructor().newInstance();
+				return true;
+			} 
+			catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+			{
+				System.out.println("Error de creacion de clase " + e.getMessage());
+				return false;
+			}
 		}
-		catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+		catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException	| SecurityException e)
 		{
+
 			System.out.println("Error de creacion de clase " + e.getMessage());
 			return false;
-		} 
-		
+		}
 	}
 	
 	public boolean setConexion(String cadena_conexion,String usuario,String password)
