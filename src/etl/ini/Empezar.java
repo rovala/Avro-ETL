@@ -18,21 +18,13 @@ import etl.dao.EntornoBaseDatos;
 import etl.dao.bigQuery;
 import etl.dao.cloudStorage;
 import etl.models.BotonPanico;
+import etl.models.PersonalRrhh;
 
 
 public class Empezar
 {
-	static Connection cn;
-	static ResultSet rs;
-	static Statement st;
-	static StreamingCsvResultSetExtractor scrs;
-	static OutputStream os;
-	static EntornoBaseDatos entornoBaseDatos=new EntornoBaseDatos();
-	static String nameFileCsv;
-	static cloudStorage cs;
 	static bigQuery bq;
-	static String uri;
-	
+	static cloudStorage cs;
 	
 	public static void main(String[] args)
 	{
@@ -45,7 +37,7 @@ public class Empezar
 		{
 			do
 			{
-				System.out.print("Extraccion de informacion de BDs para carga en la nuve por contexto\r");
+				System.out.print("Extraccion de informacion de BDs para carga en la nube por contexto\n");
 				System.out.println("=================================================================");
 				System.out.println("Menu de Ejecucion");		
 				System.out.println("-----------------");
@@ -63,7 +55,7 @@ public class Empezar
 					ejecutarBoton();
 					break;
 				case "2":
-
+					ejecutarRRHH();
 					break;
 				case "3":
 					in.close();
@@ -76,6 +68,15 @@ public class Empezar
 	
 	public static void ejecutarBoton()
 	{
+		Connection cn;
+		ResultSet rs;
+		Statement st;
+		StreamingCsvResultSetExtractor scrs;
+		OutputStream os;
+		EntornoBaseDatos entornoBaseDatos=new EntornoBaseDatos();
+		String nameFileCsv;
+		String uri;
+		
 		/**********************************/
 		/************1º ETAPA: CONEXION ***/
 		/**********************************/
@@ -89,7 +90,7 @@ public class Empezar
 		entornoBaseDatos.setStatement();
 		st=entornoBaseDatos.get_st();
 		if (st==null) return;
-		
+
 		/*********************************/
 		/************2º ETAPA: ENTORNO ***/
 		/*********************************/
@@ -114,15 +115,15 @@ public class Empezar
 			System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +ctemp.SALIDA_CSV + ctemp.getFILE_CONTEXTO());
 			return;
 		}
-					
-		System.out.println("Inicio....");
+				
 		/*************************************/
 		/************3º ETAPA: EXTRACCION  ***/
 		/*************************************/
+		System.out.println("Inicio....");
 		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_ACTIVACION(),st,rs);
+		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_ACTIVACION());
 		if (rs==null) return;
-		scrs.extractData(st,rs);
+		scrs.extractData(st,rs,0);
 		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 
 		/**************************************/
@@ -158,9 +159,9 @@ public class Empezar
 					
 		System.out.println("Inicio....");
 		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
-		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_MONITOREO(),st,rs);
+		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_MONITOREO());
 		if (rs==null) return;
-		scrs.extractData(st,rs);
+		scrs.extractData(st,rs,1);
 		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		cs.to_cloudStorage(ctemp.SALIDA_CSV + nameFileCsv, ctemp.getBUCKET_NAME(), nameFileCsv);
@@ -173,6 +174,93 @@ public class Empezar
 		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
 	}
 
+	public static void ejecutarRRHH()
+	{
+		Connection cn;
+		ResultSet rs;
+		Statement st;
+		StreamingCsvResultSetExtractor scrs;
+		OutputStream os;
+		EntornoBaseDatos entornoBaseDatos=new EntornoBaseDatos();
+		String nameFileCsv;
+		String uri;
+
+		/**********************************/
+		/************1º ETAPA: CONEXION ***/
+		/**********************************/
+		constantes ctemp=new constantes();
+		PersonalRrhh personalRrhh =new PersonalRrhh();
+		ctemp.setCLASS_BD("oracle.jdbc.driver.OracleDriver");
+		entornoBaseDatos.prepararEnvironment(ctemp.getCLASS_BD());
+		entornoBaseDatos.setConexion(personalRrhh.getCONEXION_ORACLE(),personalRrhh.getUSER_BD_RRHH(),personalRrhh.getPASSWORD_BD_RRHH());
+		cn=entornoBaseDatos.get_cn();
+		if (cn==null) return;
+		entornoBaseDatos.setStatement();
+		st=entornoBaseDatos.get_st();
+		if (st==null) return;
+
+		/*********************************/
+		/************2º ETAPA: ENTORNO ***/
+		/*********************************/
+		ctemp.setFILE_CONTEXTO("rrhh_personal");
+		bq.dropTable(ctemp.getDATASET(),personalRrhh.getTABLA1_RRHH());
+		bq.dropTable(ctemp.getDATASET(),personalRrhh.getTABLA2_RRHH());
+		bq.dropTable(ctemp.getDATASET(),personalRrhh.getTABLA3_RRHH());
+		bq.dropTable(ctemp.getDATASET(),personalRrhh.getTABLA4_RRHH());
+		bq.dropTable(ctemp.getDATASET(),personalRrhh.getTABLA5_RRHH());
+
+		bq.createTable(ctemp.getDATASET(), personalRrhh.getTABLA1_RRHH(),personalRrhh.schemaTablaPersonal());
+		bq.createTable(ctemp.getDATASET(), personalRrhh.getTABLA2_RRHH(),personalRrhh.schemaTablaInasistencia());
+		bq.createTable(ctemp.getDATASET(), personalRrhh.getTABLA3_RRHH(),personalRrhh.schemaTablaVacaciones());
+		bq.createTable(ctemp.getDATASET(), personalRrhh.getTABLA4_RRHH(),personalRrhh.schemaTablaLicSup());
+		bq.createTable(ctemp.getDATASET(), personalRrhh.getTABLA5_RRHH(),personalRrhh.schemaTablaTardanza());
+		
+		tiempo exec_time=new tiempo();
+		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
+		
+		try
+		{
+			nameFileCsv=ctemp.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
+			os=new FileOutputStream(ctemp.SALIDA_CSV + nameFileCsv);
+			scrs=new StreamingCsvResultSetExtractor(os);
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +ctemp.SALIDA_CSV + ctemp.getFILE_CONTEXTO());
+			return;
+		}
+				
+		/*************************************/
+		/************3º ETAPA: EXTRACCION  ***/
+		/*************************************/
+		System.out.println("Inicio....");
+		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
+		rs=entornoBaseDatos.leer_vista(personalRrhh.getSCRIPT_SQL_RRHH_PERSONAL());
+		if (rs==null) return;
+		scrs.extractData(st,rs,0);
+		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+
+		/**************************************/
+		/************4º ETAPA: CLOUDSTORAGE ***/
+		/**************************************/
+		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		cs.to_cloudStorage(ctemp.SALIDA_CSV + nameFileCsv, ctemp.getBUCKET_NAME(), nameFileCsv);
+		System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+						
+
+		/**********************************/
+		/************5º ETAPA: BIGQUERY ***/
+		/**********************************/
+		uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
+		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		bq.to_bigQuery(uri, ctemp.getDATASET(), personalRrhh.getTABLA1_RRHH());
+		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
+	
+
+		
+
+	}
 	
 }
 

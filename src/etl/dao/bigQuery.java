@@ -40,9 +40,7 @@ public class bigQuery
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-			e.printStackTrace();
 		}
 		if (job.isDone())
 		{

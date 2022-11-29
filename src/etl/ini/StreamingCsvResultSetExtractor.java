@@ -21,7 +21,7 @@ public class StreamingCsvResultSetExtractor
 		this.os = os;
 	}
 
-	public void extractData(final Statement st, final ResultSet rs)
+	public void extractData(final Statement st, final ResultSet rs,int dificultad)
 	{
 		try (PrintWriter pw = new PrintWriter(os, true))
 		{
@@ -35,15 +35,19 @@ public class StreamingCsvResultSetExtractor
 				for (int i = 1; i <= columnCount; i++)
 				{
 					final Object value = rs.getObject(i);
-
-					//pw.write(value == null ? "" : value.toString() );
-					linea=value == null ? "" : value.toString();
-					linea=linea.contains("|")?linea.replace("|"," "):linea;
-					linea=linea.contains("\"")?linea.replace("\"",""):linea;
-					linea=linea.contains("\r")?linea.replace("\r"," "):linea;
-					linea=linea.contains("\n")?linea.replace("\n"," "):linea;
-
-					pw.write(linea);
+					if (dificultad==0)
+					{
+						pw.write(value == null ? "" : value.toString());
+					}
+					else
+					{
+						linea=value == null ? "" : value.toString();
+						linea=linea.contains("|")?linea.replace("|"," "):linea;
+						linea=linea.contains("\"")?linea.replace("\"",""):linea;
+						linea=linea.contains("\r")?linea.replace("\r"," "):linea;
+						linea=linea.contains("\n")?linea.replace("\n"," "):linea;
+						pw.write(linea);
+					}
 					if (i != columnCount)
 					{
 						pw.append(DELIMITER);

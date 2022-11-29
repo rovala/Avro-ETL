@@ -9,7 +9,8 @@ import java.sql.Statement;
 
 import etl.utiles.constantes; 
 
-public class EntornoBaseDatos {
+public class EntornoBaseDatos
+{
 	constantes k=new constantes();
 	private Connection cn;
 	private Statement st;
@@ -77,15 +78,14 @@ public class EntornoBaseDatos {
 
 	public Statement get_st()
 	{
-		return st;
+		return this.st;
 	}
 
-	public ResultSet leer_vista(String sql,Statement st,ResultSet rs)
+	public ResultSet leer_vista(String sql)
 	{
 		try
 		{
-			rs = st.executeQuery(sql);
-			return rs;
+			return this.st.executeQuery(sql);
 		}
 		catch (SQLException e)
 		{
