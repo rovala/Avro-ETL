@@ -28,10 +28,10 @@ public class PersonalRrhh
     /**LLAMADAS A RUTINAS**/
 	private String SCRIPT_SQL_RRHH_PERSONAL;
 	private String SCRIPT_SQL_RRHH_INASISTENCIA;
+    private String SCRIPT_SQL_RRHH_VACACIONES;
     private String SCRIPT_SQL_RRHH_LICSUP;
     private String SCRIPT_SQL_RRHH_TARDANZA;
-    private String SCRIPT_SQL_RRHH_VACACIONES;
-
+    
     public PersonalRrhh()
 	{
 		this.CONEXION_ORACLE="jdbc:oracle:thin:@172.34.0.120:7520:DBPRUEBAS";
@@ -40,15 +40,16 @@ public class PersonalRrhh
 		
 		this.SCRIPT_SQL_RRHH_PERSONAL="SELECT * FROM ADMINPJ.UVW_BQ_PERSONAL";
 	    this.SCRIPT_SQL_RRHH_INASISTENCIA="SELECT * FROM ADMINPJ.UVW_BQ_INASISTENCIA";
+        this.SCRIPT_SQL_RRHH_VACACIONES="SELECT * FROM ADMINPJ.UVW_BQ_VACACIONES";
         this.SCRIPT_SQL_RRHH_LICSUP="SELECT * FROM ADMINPJ.UVW_BQ_PER_LICSUSP";
         this.SCRIPT_SQL_RRHH_TARDANZA="SELECT * FROM ADMINPJ.UVW_BQ_TARDANZA";
-        this.SCRIPT_SQL_RRHH_VACACIONES="SELECT * FROM ADMINPJ.UVW_BQ_VACACIONES";
-
-        this.TABLA1_RRHH="BQ_ETL_BOTON_PERSONAL";
-		this.TABLA2_RRHH="BQ_ETL_BOTON_INASISTENCIA";
-        this.TABLA3_RRHH="BQ_ETL_BOTON_LICSUP";
-		this.TABLA4_RRHH="BQ_ETL_BOTON_TARDANZA";
-        this.TABLA5_RRHH="BQ_ETL_BOTON_VACACIONES";
+        
+        this.TABLA1_RRHH="BQ_ETL_RRHH_PERSONAL";
+		this.TABLA2_RRHH="BQ_ETL_RRHH_INASISTENCIA";
+        this.TABLA3_RRHH="BQ_ETL_RRHH_VACACIONES";
+        this.TABLA4_RRHH="BQ_ETL_RRHH_LICSUP";
+		this.TABLA5_RRHH="BQ_ETL_RRHH_TARDANZA";
+        
 	}
 
     public Schema schemaTablaPersonal()
@@ -157,7 +158,7 @@ public class PersonalRrhh
 
     public Schema schemaTablaTardanza()
 	{
-                this.schemaLicSup = Schema.of(
+                this.schemaTardanza = Schema.of(
                 Field.of("F_FECHAHORACONSULTA", StandardSQLTypeName.TIMESTAMP),
                 Field.of("N_IDTRABAJADOR", StandardSQLTypeName.INT64),
                 Field.of("C_DNI", StandardSQLTypeName.STRING),              
