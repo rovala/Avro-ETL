@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="api-common-2.2.1" level="project" />
+    <orderEntry type="library" name="failureaccess-1.0.1" level="project" />
+    <orderEntry type="library" name="gax-2.19.4" level="project" />
+    <orderEntry type="library" name="gax-httpjson-0.104.4" level="project" />
+    <orderEntry type="library" name="google-api-client-2.0.0" level="project" />
+    <orderEntry type="library" name="google-api-services-bigquery-v2-rev20220924-2.0.0" level="project" />
+    <orderEntry type="library" name="google-api-services-storage-v1-rev20220705-2.0.0" level="project" />
+    <orderEntry type="library" name="google-auth-library-credentials-1.12.1" level="project" />
+    <orderEntry type="library" name="google-auth-library-oauth2-http-1.12.1" level="project" />
+    <orderEntry type="library" name="google-cloud-core-2.8.22" level="project" />
+    <orderEntry type="library" name="google-cloud-core-http-2.8.22" level="project" />
+    <orderEntry type="library" name="google-cloud-storage-2.2.2" level="project" />
+    <orderEntry type="library" name="google-cloud-storage-2.13.1" level="project" />
+    <orderEntry type="library" name="google-http-client-1.42.2" level="project" />
+    <orderEntry type="library" name="google-http-client-appengine-1.42.2" level="project" />
+    <orderEntry type="library" name="google-http-client-gson-1.42.2" level="project" />
+    <orderEntry type="library" name="google_http_client_jackson2-1.0.1" level="project" />
+    <orderEntry type="library" name="grpc-context-1.27.2" level="project" />
+    <orderEntry type="library" name="gson-2.9.1" level="project" />
+    <orderEntry type="library" name="guava-31.1-jre" level="project" />
+    <orderEntry type="library" name="jackson-annotations-2.14.0-rc2" level="project" />
+    <orderEntry type="library" name="jackson-core-2.14.0-rc2" level="project" />
+    <orderEntry type="library" name="jackson-databind-2.14.0-rc2" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-8.0.30" level="project" />
+    <orderEntry type="library" name="ojdbc11" level="project" />
+    <orderEntry type="library" name="opencensus-api-0.31.1" level="project" />
+    <orderEntry type="library" name="opencensus-contrib-http-util-0.31.1" level="project" />
+    <orderEntry type="library" name="postgresql-42.5.0" level="project" />
+    <orderEntry type="library" name="threetenbp-1.6.3" level="project" />
+    <orderEntry type="library" name="google-cloud-bigquery-2.6.1" level="project" />
+  </component>
+</module>
