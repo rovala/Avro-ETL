@@ -19,19 +19,6 @@ public class constantes
 	public String USER_BD_RRHH;
 	public String PASSWORD_BD_RRHH;
 
-	/**TABLAS RRHH**/
-	public String TABLA1_RRHH;
-	public String TABLA2_RRHH;
-	public String TABLA3_RRHH;
-	public String TABLA4_RRHH;
-	public String TABLA5_RRHH;
-	/**LLAMADAS A RUTINAS**/
-	public String SCRIPT_SQL_PERSONAL;
-	public String SCRIPT_SQL_INASISTENCIA;
-	public String SCRIPT_SQL_LICENCIASUSPENSION;
-	public String SCRIPT_SQL_TARDANZA;
-	public String SCRIPT_SQL_VACACIONES;
-
 	/**DATASET**/
 	public String DATASET;
 

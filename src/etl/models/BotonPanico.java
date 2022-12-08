@@ -4,6 +4,9 @@ import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BotonPanico {
 	
 	private Schema schemaActivacion;
@@ -95,7 +98,18 @@ public class BotonPanico {
 	public String getCONEXION_POSTGRESQL() {
 		return CONEXION_POSTGRESQL;
 	}
-	
+
+	public List<String> getTablas()
+	{
+		List<String> listaTablas=Arrays.asList(this.TABLA1_BOTON,this.TABLA2_BOTON);
+		return listaTablas;
+	}
+
+	public List<Schema> getSchemas()
+	{
+		List<Schema> listaSchemas=Arrays.asList(this.schemaTablaActivacion(),this.schemaTablaMonitoreo());
+		return listaSchemas;
+	}
 }
 
 

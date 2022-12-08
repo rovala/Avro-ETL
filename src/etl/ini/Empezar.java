@@ -1,9 +1,16 @@
 package etl.ini;
 
+import etl.dao.EntornoBaseDatos;
+import etl.dao.bigQuery;
+import etl.dao.cloudStorage;
+import etl.models.DefinicionEntornos;
+import etl.models.PersonalRrhh;
+import etl.utiles.constantes;
+import etl.utiles.tiempo;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -11,14 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-
-import etl.utiles.constantes;
-import etl.utiles.tiempo;
-import etl.dao.EntornoBaseDatos;
-import etl.dao.bigQuery;
-import etl.dao.cloudStorage;
-import etl.models.BotonPanico;
-import etl.models.PersonalRrhh;
 
 
 public class Empezar
@@ -28,8 +27,19 @@ public class Empezar
 	
 	public static void main(String[] args)
 	{
+		/****INICIO DE LOS SERVICIOS CLOUD****/
 		cs=new cloudStorage();
 		bq=new bigQuery();
+		/******SERVICIOS CLOUD INICIADOS******/
+		List<String> arrayEntornos=Arrays.asList("boton_panico","rrhh_personal");
+		DefinicionEntornos definicionEntornos=new DefinicionEntornos(arrayEntornos,bq);
+		System.out.println("Iniciando entorno......");
+		definicionEntornos.seteoEntornos();
+		System.out.println("Terminando entorno......");
+
+
+
+
 		String eleccion="";
 		List <String> choose=new ArrayList<String>(Arrays.asList("1","2","3"));
 		Scanner in=new Scanner(System.in);
@@ -80,7 +90,7 @@ public class Empezar
 		/**********************************/
 		/************1º ETAPA: CONEXION ***/
 		/**********************************/
-		constantes ctemp=new constantes();
+		/*constantes ctemp=new constantes();
 		BotonPanico bPanico=new BotonPanico();
 		ctemp.setCLASS_BD("org.postgresql.Driver");
 		entornoBaseDatos.prepararEnvironment(ctemp.getCLASS_BD());
@@ -89,19 +99,19 @@ public class Empezar
 		if (cn==null) return;
 		entornoBaseDatos.setStatement();
 		st=entornoBaseDatos.get_st();
-		if (st==null) return;
+		if (st==null) return;*/
 
 		/*********************************/
 		/************2º ETAPA: ENTORNO ***/
 		/*********************************/
-		ctemp.setFILE_CONTEXTO("boton_panico");
+		/*ctemp.setFILE_CONTEXTO("boton_panico");
 		bq.dropTable(ctemp.getDATASET(),bPanico.getTABLA1_BOTON());
 		bq.dropTable(ctemp.getDATASET(),bPanico.getTABLA2_BOTON());
 
 		bq.createTable(ctemp.getDATASET(), bPanico.getTABLA1_BOTON(),bPanico.schemaTablaActivacion());
-		bq.createTable(ctemp.getDATASET(), bPanico.getTABLA2_BOTON(),bPanico.schemaTablaMonitoreo());
+		bq.createTable(ctemp.getDATASET(), bPanico.getTABLA2_BOTON(),bPanico.schemaTablaMonitoreo());*/
 
-		tiempo exec_time=new tiempo();
+		/*tiempo exec_time=new tiempo();
 		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
 		
 		try
@@ -114,37 +124,37 @@ public class Empezar
 		{
 			System.out.println("Apertura de Archivo " + e.getMessage() + "\n " +ctemp.SALIDA_CSV + ctemp.getFILE_CONTEXTO());
 			return;
-		}
+		}*/
 				
 		/*************************************/
 		/************3º ETAPA: EXTRACCION  ***/
 		/*************************************/
-		System.out.println("Inicio....");
+		/*System.out.println("Inicio....");
 		System.out.println("Intentando ejecutar vista...."+exec_time.getPrimitiveDateTime().replace("T"," "));
 		rs=entornoBaseDatos.leer_vista(bPanico.getSCRIPT_SQL_BOTON_ACTIVACION());
 		if (rs==null) return;
 		scrs.extractData(st,rs,0);
-		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("Termino de extraccion...." + exec_time.getPrimitiveDateTime().replace("T"," "));*/
 
 		/**************************************/
 		/************4º ETAPA: CLOUDSTORAGE ***/
 		/**************************************/
-		System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		/*System.out.println("\nInicio cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		cs.to_cloudStorage(ctemp.SALIDA_CSV + nameFileCsv, ctemp.getBUCKET_NAME(), nameFileCsv);
-		System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));
+		System.out.println("Fin cloudstorage...." + exec_time.getPrimitiveDateTime().replace("T"," "));*/
 						
 
 		/**********************************/
 		/************5º ETAPA: BIGQUERY ***/
 		/**********************************/
-		uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
+		/*uri=bq.getUri(nameFileCsv,ctemp.getBUCKET_NAME());
 		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		bq.to_bigQuery(uri, ctemp.getDATASET(), bPanico.getTABLA1_BOTON());
 		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
+		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");*/
 
 					
-		exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
+		/*exec_time.setFormatDateTime(ctemp.FORMATO_DATE_TIME);
 		try
 		{
 			nameFileCsv=ctemp.getFILE_CONTEXTO() + exec_time.getDateTime().replace(":","_") +".csv";
@@ -171,7 +181,7 @@ public class Empezar
 		System.out.println("\nInicio carga a bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
 		bq.to_bigQuery(uri, ctemp.getDATASET(), bPanico.getTABLA2_BOTON());
 		System.out.println("Fin carga Bigquery...." + exec_time.getPrimitiveDateTime().replace("T"," "));
-		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");
+		System.out.println("Todo OK Cerrando...." + exec_time.getPrimitiveDateTime().replace("T"," ")+"\n");*/
 	}
 
 	public static void ejecutarRRHH()

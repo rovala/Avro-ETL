@@ -4,6 +4,9 @@ import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PersonalRrhh
 {
     /**ESTRUCTURA DE TABLAS**/
@@ -222,6 +225,18 @@ public class PersonalRrhh
 
     public String getSCRIPT_SQL_RRHH_VACACIONES() {
         return SCRIPT_SQL_RRHH_VACACIONES;
+    }
+
+    public List<String> getTablas()
+    {
+        List<String> listaTablas= Arrays.asList(this.TABLA1_RRHH,this.TABLA2_RRHH,TABLA3_RRHH,TABLA4_RRHH,TABLA5_RRHH);
+        return listaTablas;
+    }
+
+    public List<Schema> getSchemas()
+    {
+        List<Schema> listaSchemas=Arrays.asList(this.schemaTablaPersonal(),this.schemaTablaInasistencia(),this.schemaTablaVacaciones(),this.schemaTablaLicSup(),this.schemaTablaTardanza());
+        return listaSchemas;
     }
 
 }
