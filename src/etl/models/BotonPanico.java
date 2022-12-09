@@ -110,6 +110,12 @@ public class BotonPanico {
 		List<Schema> listaSchemas=Arrays.asList(this.schemaTablaActivacion(),this.schemaTablaMonitoreo());
 		return listaSchemas;
 	}
+
+	public List<String> getConsultas()
+	{
+		List<String> listaSql=Arrays.asList(this.SCRIPT_SQL_BOTON_ACTIVACION,this.SCRIPT_SQL_BOTON_MONITOREO);
+		return listaSql;
+	}
 }
 
 

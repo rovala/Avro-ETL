@@ -55,7 +55,7 @@ public class tiempo {
 		return LocalTime.now().format(DateTimeFormatter.ofPattern(this.formatoTime));
 	}
 	
-		public void setFormatDateTime(String patron)
+	public void setFormatDateTime(String patron)
 	{
 		this.formatoDateTime=patron;
 	}

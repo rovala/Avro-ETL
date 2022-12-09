@@ -13,12 +13,6 @@ public class constantes
 	/**CLASES DE BASES DE DATOS POSTGRESQL**/
 	public String CLASS_BD;
 	
-	/**CLASES DE BASES DE DATOS ORACLE**/
-	public String CLASS_ORACLE;
-	public String CONEXION_ORACLE;
-	public String USER_BD_RRHH;
-	public String PASSWORD_BD_RRHH;
-
 	/**DATASET**/
 	public String DATASET;
 

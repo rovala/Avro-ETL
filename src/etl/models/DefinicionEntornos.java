@@ -24,7 +24,7 @@ public class DefinicionEntornos
         /*************SETEO DE ENTORNO ***/
         /*********************************/
         constantes ctemp=new constantes();
-        arrayEntornos.stream().forEach(x->
+        this.arrayEntornos.stream().forEach(x->
                 {
                     List<String> arrayTablas=new ArrayList<>();
                     List<Schema> arraySchemas=new ArrayList<>();
