@@ -5,7 +5,6 @@ import etl.dao.cloudStorage;
 import etl.models.CloudStorageBigqueryTx;
 import etl.models.DefinicionEntornos;
 import etl.models.DefinicionExtraccion;
-import etl.utiles.constantes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,30 +38,13 @@ public class Empezar
 		System.out.println("Terminando extraccion......");
 
 		System.out.println("Iniciando CloudStorage......");
-		almacenCloudStorage(arrayCloudStorageBigqueryTx);
-		System.out.println("Termºinando CloudStorage......");
+		cs.almacenCloudStorage(arrayCloudStorageBigqueryTx);
+		System.out.println("Terminando CloudStorage......");
 
 		System.out.println("Iniciando Bigquery......");
-		almacenBigquery(arrayCloudStorageBigqueryTx);
+		bq.almacenBigquery(arrayCloudStorageBigqueryTx);
 		System.out.println("Terminando Bigquery......");
 
 	}
-	
-	public static void almacenCloudStorage(List<CloudStorageBigqueryTx> arrayCloudStorageBigqueryTx)
-	{
-		constantes ctemp=new constantes();
 
-		arrayCloudStorageBigqueryTx.stream().forEach(x->{
-			cs.to_cloudStorage(ctemp.SALIDA_CSV+x.getCsv(),ctemp.getBUCKET_NAME(), x.getCsv());
-		});
-	}
-
-	public static void almacenBigquery(List<CloudStorageBigqueryTx> arrayCloudStorageBigqueryTx)
-	{
-		constantes ctemp=new constantes();
-		arrayCloudStorageBigqueryTx.stream().forEach(x->{
-			String uri=bq.getUri(x.getCsv(),ctemp.getBUCKET_NAME());
-			bq.to_bigQuery(uri, x.getDataset(), x.getTabla());
-		});
-	}
 }

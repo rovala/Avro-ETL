@@ -239,4 +239,9 @@ public class PersonalRrhh
         return listaSchemas;
     }
 
+    public List<String> getConsultas()
+    {
+        List<String> listaSql=Arrays.asList(this.SCRIPT_SQL_RRHH_PERSONAL,this.SCRIPT_SQL_RRHH_INASISTENCIA,this.SCRIPT_SQL_RRHH_VACACIONES,this.SCRIPT_SQL_RRHH_LICSUP,this.SCRIPT_SQL_RRHH_TARDANZA);
+        return listaSql;
+    }
 }

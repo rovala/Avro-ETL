@@ -1,6 +1,10 @@
 package etl.dao;
 
 import com.google.cloud.bigquery.*;
+import etl.models.CloudStorageBigqueryTx;
+import etl.utiles.constantes;
+
+import java.util.List;
 
 
 public class bigQuery
@@ -21,7 +25,6 @@ public class bigQuery
 	    
 		Job job = bq.create(JobInfo.of(loadConfig));
 		
-				
 		// Blocks until this load table job completes its execution, either failing or succeeding.
 		try
 		{
@@ -33,11 +36,11 @@ public class bigQuery
 		}
 		if (job.isDone())
 		{
-			System.out.println("CSV from GCS successfully added during load append job");
+			System.out.println("CSV desde GCS agregado con éxito durante el trabajo de carga de la información");
 		}
 		else
 		{
-			System.out.println("BigQuery was unable to load into the table due to an error:" + job.getStatus().getError());
+			System.out.println("BigQuery no pudo cargar en la tabla, debido a un error:" + job.getStatus().getError());
 		}
 	}
 	
@@ -70,7 +73,7 @@ public class bigQuery
 		}
 		catch (BigQueryException e)
 		{
-			System.out.println("Tabla no puedo ser creada. \n" + e.toString());
+			System.out.println("Tabla no puedo ser creada: " + e.toString());
 		}
 	}
 	
@@ -84,7 +87,16 @@ public class bigQuery
 	    }
 	    catch (BigQueryException e)
 	    {
-	    	System.out.println("Tabla no puedo ser eliminada. \n" + e.toString());
+	    	System.out.println("Tabla no puedo ser eliminada: " + e.toString());
 	    }
+	}
+
+	public void almacenBigquery(List<CloudStorageBigqueryTx> arrayCloudStorageBigqueryTx)
+	{
+		constantes ctemp=new constantes();
+		arrayCloudStorageBigqueryTx.stream().forEach(x->{
+			String uri=this.getUri(x.getCsv(),ctemp.getBUCKET_NAME());
+			this.to_bigQuery(uri, x.getDataset(), x.getTabla());
+		});
 	}
 }

@@ -53,10 +53,19 @@ public class DefinicionExtraccion
 
                     break;
                 case "rrhh_personal":
-                    //PersonalRrhh prh=new PersonalRrhh();
-                    //arrayTablas=prh.getTablas();
-
-
+                    System.out.println("Entro a personal");
+                    PersonalRrhh prh=new PersonalRrhh();
+                    arrayTablas=prh.getTablas();
+                    ctemp.setCLASS_BD("oracle.jdbc.driver.OracleDriver");
+                    entornoBaseDatos.prepararEnvironment(ctemp.getCLASS_BD());
+                    entornoBaseDatos.setConexion(prh.getCONEXION_ORACLE(),prh.getUSER_BD_RRHH(),prh.getPASSWORD_BD_RRHH());
+                    cn=entornoBaseDatos.get_cn();
+                    if (cn==null) return;
+                    entornoBaseDatos.setStatement();
+                    st=entornoBaseDatos.get_st();
+                    if (st==null) return;
+                    System.out.println("Termino personal");
+                    strSql=prh.getConsultas();
                     break;
             }
             this.executeSql(entornoBaseDatos,st,strSql,ctemp,arrayTablas);

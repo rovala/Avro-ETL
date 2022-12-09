@@ -1,15 +1,17 @@
 package etl.dao;
 
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import etl.models.CloudStorageBigqueryTx;
+import etl.utiles.constantes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 
 public class cloudStorage {
@@ -25,11 +27,11 @@ public class cloudStorage {
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 		try
 		{
-			stcs.create(blobInfo, Files.readAllBytes(Paths.get(csvFile)));
+			this.stcs.create(blobInfo, Files.readAllBytes(Paths.get(csvFile)));
 		}
 		catch (IOException e)
 		{
-			System.out.println(e.getMessage());
+			System.out.println("Error en almacenamiento GCP CloudStorage: "+ e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -42,7 +44,16 @@ public class cloudStorage {
 		}
 		catch (Exception e)
 		{
-			System.out.println(e.getMessage());
+			System.out.println("No fue posible conectar a GCP CloudStorage: " + e.getMessage());
 		}
+	}
+
+	public void almacenCloudStorage(List<CloudStorageBigqueryTx> arrayCloudStorageBigqueryTx)
+	{
+		constantes ctemp=new constantes();
+
+		arrayCloudStorageBigqueryTx.stream().forEach(x->{
+			this.to_cloudStorage(ctemp.SALIDA_CSV+x.getCsv(),ctemp.getBUCKET_NAME(), x.getCsv());
+		});
 	}
 }
