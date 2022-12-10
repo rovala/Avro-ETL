@@ -10,7 +10,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/*
+***********************************************************************
+****** PARA UN NUEVO ENTORNO HACER LAS SIGUIENTES MODIFICACIONES ******
+****** AGREGAR LA CLASE CORRESPONDIENTE EN EL PACKAGE MODELS     ******
+****** EN LA CLASE MODELS/DEFINICIONENTORNOS AGREGAR CONTROL     ******
+****** DE FLUJO CORRESPONDIENTE, METODO seteoEntornos LINEA 21   ******
+****** EN LA CLASE MODELS/DEFINICIONEXTRACCION AGREGAR CONTROL    ******
+****** DE FLUJO CORRESPONDIENTE, METODO startExtraccion LINEA 28  ******
+*/
 
 public class Empezar
 {

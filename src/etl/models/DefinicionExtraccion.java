@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,6 @@ public class DefinicionExtraccion
 
                     break;
                 case "rrhh_personal":
-                    System.out.println("Entro a personal");
                     PersonalRrhh prh=new PersonalRrhh();
                     arrayTablas=prh.getTablas();
                     ctemp.setCLASS_BD("oracle.jdbc.driver.OracleDriver");
@@ -64,13 +64,26 @@ public class DefinicionExtraccion
                     entornoBaseDatos.setStatement();
                     st=entornoBaseDatos.get_st();
                     if (st==null) return;
-                    System.out.println("Termino personal");
                     strSql=prh.getConsultas();
                     break;
             }
             this.executeSql(entornoBaseDatos,st,strSql,ctemp,arrayTablas);
-            //cn.close();
-            //st.close();
+            try
+            {
+                st.close();
+            }
+            catch (SQLException e)
+            {
+
+            }
+            try
+            {
+                cn.close();
+            }
+            catch (SQLException e)
+            {
+
+            }
         });
         return arrayCloudStorageBigqueryTx;
     }
